@@ -14,7 +14,7 @@ This repo is currently set up for the Steamworks SDK v1.57. Keeping it up to dat
 
 ## Setting up
 
-1. Place this repo in your Unity project's `Assets` folder I like to set up my dependencies with git submodules, so to include this repo in my project I run `git submodule add https://github.com/marcospgp/steamworksnt.git` and run `git submodule update --init --recursive --merge --remote` whenever I want to update the dependency or set it up for the first time after a fresh `git clone`.
+1. Place this repo in your Unity project's `Assets` folder. I like to set up my dependencies with git submodules, so to include this repo in my project I run `git submodule add https://github.com/marcospgp/steamworksnt.git` and run `git submodule update --init --recursive --merge --remote` whenever I want to update the dependency or set it up for the first time after a fresh `git clone`.
 1. Obtain the Steamworks SDK files and merge the `redistributable_bin` folder with the one present in `/sdk` (so `.meta` files are kept). I also like to keep the SDK's `public` folder in `/sdk` in order to reference those files while writing code.
 1. For development only, place a `steam_appid.txt` file at the root of the Unity project. It should contain the game's steam app ID (commonly `480` for testing, representing the game Spacewar). Remember not to ship this file in distribution builds.
 1. Add the `NetworkManager` component to an object in your Unity scene (typically left empty and also called `NetworkManager`.
