@@ -23,7 +23,7 @@ This repo is currently set up for the Steamworks SDK v1.57. Keeping it up to dat
 
 ### sdk
 
-Contains necessary files from the Steamworks SDK.
+Contains necessary files from the Steamworks SDK (not included).
 
 Note that each file in redistributable_bin is configured in the Unity inspector (thus having a corresponding .meta file in this repo) according to its target platform (OS & 32 or 64 bit). All of these files are set to be included in all platforms (although not sure if this remains true when adding support for new platforms into the project), and "load on startup" is left unchecked as it does not seem to be required.
 
