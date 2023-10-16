@@ -1,7 +1,26 @@
 .DS_Store
 *.meta
+
+# Getting around weird .gitignore rules to ignore all of "/sdk" except for a few
+# specific ".meta" files.
 /sdk/*
-!/sdk/redistributable_bin/*.meta
+!/sdk/redistributable_bin/
+/sdk/redistributable_bin/*
+!/sdk/redistributable_bin/steam_api.dll.meta
+!/sdk/redistributable_bin/steam_api.lib.meta
+!/sdk/redistributable_bin/osx
+/sdk/redistributable_bin/osx/*
+!/sdk/redistributable_bin/osx/libsteam_api.dylib.meta
+!/sdk/redistributable_bin/linux32
+/sdk/redistributable_bin/linux32/*
+!/sdk/redistributable_bin/linux32/libsteam_api.so.meta
+!/sdk/redistributable_bin/linux64
+/sdk/redistributable_bin/linux64/*
+!/sdk/redistributable_bin/linux64/libsteam_api.so.meta
+!/sdk/redistributable_bin/win64
+/sdk/redistributable_bin/win64/*
+!/sdk/redistributable_bin/win64/steam_api64.dll.meta
+!/sdk/redistributable_bin/win64/steam_api64.lib.meta
 
 # This .gitignore file should be placed at the root of your Unity project directory
 #
