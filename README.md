@@ -11,7 +11,7 @@ This repo should act as a good example for those seeking to call the Steamworks 
 ## Setting up
 
 1. For development only, place a `steam_appid.txt` file at the root of the Unity project. It should contain the game's steam app ID (commonly `480` for testing, representing the game Spacewar). Remember not to ship this file in distribution builds.
-2. Create an empty "NetworkManager" object in the scene and add the "NetworkManager" component to it.
+2. Add the `NetworkManager` component to an object in your Unity scene (typically left empty and also called `NetworkManager`.
 3. Place other components as needed (TODO: more docs).
 
 ## Folder structure
