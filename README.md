@@ -2,15 +2,15 @@
 
 A Steamworks SDK wrapper for Unity.
 
-Currently set up for v1.57.
-
 This repo should act as a good example for those seeking to call the Steamworks SDK directly from their C# code (and not just those using the Unity engine). Not all SDK functions are included in `Api.cs`, but you can easily add any you would like to call.
 
 ## Why
 
 Existing wrappers such as Steamworks.NET or Facepunch.Steamworks can be opaque and stale, with multiple open issues and PRs at time of writing. I believe it is worth working directly with the Steamworks binaries and bringing the API calls into one's own code. That way you can understand what's going on under the hood, update SDK versions at any time, and make use of functionality you may have not otherwise.
 
+## Version
 
+This repo is currently set up for the Steamworks SDK v1.57. Keeping it up to date should be simple, as the SDK is kept stable over time.
 
 ## Setting up
 
