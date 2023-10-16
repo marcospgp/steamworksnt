@@ -2,6 +2,12 @@
 
 A Steamworks SDK wrapper for Unity.
 
+## Why
+
+Existing wrappers such as Steamworks.NET or Facepunch.Steamworks can be opaque and stale, with multiple open issues and PRs at time of writing. I believe it is worth working directly with the Steamworks binaries and bringing the API calls into one's own code. That way you can understand what's going on under the hood, update SDK versions at any time, and make use of functionality you may have not otherwise.
+
+This repo should act as a good example for those seeking to call the Steamworks SDK directly from their C# code. Not all SDK functions are included in Api.cs, but you can easily add any you would like to call.
+
 ## Setting up
 
 1. For development only, place a `steam_appid.txt` file at the root of the Unity project. It should contain the game's steam app ID (commonly `480` for testing, representing the game Spacewar). Remember not to ship this file in distribution builds.
@@ -14,11 +20,11 @@ A Steamworks SDK wrapper for Unity.
 
 Contains necessary files from the Steamworks SDK.
 
-Note that each file in `redistributable_bin` is configured in the Unity inspector according to its target platform (OS & 32 or 64 bit). All of these files are set to be included in all platforms (although not sure if this remains true when adding support for new platforms into the project), and "load on startup" is left unchecked as it does not seem to be required.
+Note that each file in redistributable_bin is configured in the Unity inspector (thus having a corresponding .meta file in this repo) according to its target platform (OS & 32 or 64 bit). All of these files are set to be included in all platforms (although not sure if this remains true when adding support for new platforms into the project), and "load on startup" is left unchecked as it does not seem to be required.
 
 The SDK's `Readme.txt` is also included in order to keep track of SDK version.
 
-Note that when updating library files for MacOS, it may be necessary to run `sudo xattr -r -d com.apple.quarantine libsteam_api.dylib` in the folder containing `libsteam_api.dylib`. Otherwise, Unity will display an error pop-up when attempting to load this file.
+Note that when updating the binary for MacOS, it may be necessary to run `sudo xattr -r -d com.apple.quarantine libsteam_api.dylib` in `sdk/redistributable_bin/osx`. Otherwise, Unity will display an error pop-up when attempting to load it.
 
 ### SteamworksAPI
 
@@ -75,3 +81,7 @@ Even though `__cdecl` is set to an empty string in `steam_api_common.h` for non-
 ### Marshaling booleans
 
 Use `[return: MarshalAs(UnmanagedType.U1)]` when P/Invoking methods that return booleans (see https://learn.microsoft.com/en-us/visualstudio/code-quality/ca1414).
+
+## License
+
+This repository is licensed to the public domain.
