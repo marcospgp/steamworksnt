@@ -12,7 +12,7 @@ Existing wrappers such as Steamworks.NET or Facepunch.Steamworks can be opaque a
 
 ## Version
 
-This repo is currently set up for the Steamworks SDK v1.57. Keeping it up to date should be simple, as the SDK is kept stable over time.
+This repo is currently set up for the Steamworks SDK v1.57. Keeping it up to date should be simple, as there seems to be an effort to avoid breaking changes to the SDK.
 
 ## Setting up
 
