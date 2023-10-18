@@ -1,12 +1,14 @@
 # Steamworksn't
 
-A Steamworks SDK wrapper for Unity.
+An example of how to interface with the Steamworks SDK (C++) from C# in Unity.
 
-This repo should act as a good example for those seeking to call the Steamworks SDK directly from their C# code (and not just those using the Unity engine). Not all SDK functions are included in `Api.cs`, but you can easily add any you would like to call.
+There is no build step - you can use this code directly in your Unity project.
+
+Not all SDK functions are included in `Api.cs`, but you can easily add any you would like to call.
 
 ## Why
 
-The Steamworks SDK is based in C++ and thus is not straightforward to interop with from C# code. One has to use P/Invoke, a way to call functions declared in binary files (such as `.dll` on Windows).
+The Steamworks SDK is based on C++ and thus is not straightforward to interop with from C# code. One has to use P/Invoke, a way to call functions declared in binary files (such as `.dll` on Windows).
 
 Existing wrappers such as Steamworks.NET or Facepunch.Steamworks can be opaque and stale, with multiple open issues and PRs at time of writing. I believe it is worth working directly with the Steamworks binaries and bringing the API calls into one's own code. That way you can understand what's going on under the hood, update SDK versions at any time, and make use of functionality you may have not otherwise.
 
@@ -17,9 +19,9 @@ This repo is currently set up for the Steamworks SDK v1.57. Keeping it up to dat
 ## Setting up
 
 1. Place this repo in your Unity project's `Assets` folder. I like to set up my dependencies with git submodules, so to include this repo in my project I run `git submodule add https://github.com/marcospgp/steamworksnt.git` and run `git submodule update --init --recursive --merge --remote` whenever I want to update the dependency or set it up for the first time after a fresh `git clone`.
-1. Obtain the Steamworks SDK files and merge the `redistributable_bin` folder with the one present in `/sdk` (so `.meta` files are kept). I also like to keep the SDK's `public` folder in `/sdk` in order to reference those files while writing code. Note that if you opened the Unity editor after the previous step, the `.meta` files may have been deleted and will have to be re-added.
+1. Obtain the Steamworks SDK files and merge the `redistributable_bin` folder with the one in this repo with the same name. This will make Unity rely on the `.meta` files in this repo to configure the Steamworks binaries (you can check these settings in the Unity inspector). Note that if you opened the Unity editor since the previous step, the `.meta` files may have been deleted and will have to be re-added.
 1. For development only, place a `steam_appid.txt` file at the root of the Unity project. It should contain the game's steam app ID (commonly `480` for testing, representing the game Spacewar). Remember not to ship this file in distribution builds.
-1. Add the `NetworkManager` component to an object in your Unity scene (typically left empty and also called `NetworkManager`.
+1. Add the `NetworkManager` component to an object in your Unity scene (typically left empty and also called `NetworkManager`).
 1. Place other components as needed (TODO: more docs).
 
 ## Folder structure
