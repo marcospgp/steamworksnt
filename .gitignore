@@ -1,12 +1,10 @@
 .DS_Store
 *.meta
 
-/sdk/*
-
 # Do not ignore .meta files in the Steamworks binaries folder.
 !/redistributable_bin/**/*.meta
 
-# Ignore Steamworks binaries.
+# Ignore Steamworks binaries (restrictive license).
 /redistributable_bin/**/*.dll
 /redistributable_bin/**/*.so
 /redistributable_bin/**/*.dylib
