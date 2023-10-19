@@ -17,7 +17,7 @@ Existing wrappers such as Steamworks.NET or Facepunch.Steamworks can be opaque a
 ## Setting up
 
 1. Place this repo in your Unity project's `Assets` folder. I like to set up my dependencies with git submodules, so to include this repo in my project I run `git submodule add https://github.com/marcospgp/steamworksnt.git` and run `git submodule update --init --recursive --merge --remote` whenever I want to update the dependency or set it up for the first time after a fresh `git clone`.
-1. Obtain the Steamworks SDK files and merge its `redistributable_bin` folder with the one in this repo. This will make Unity rely on the `.meta` files in this repo to configure the Steamworks binaries (you can check these settings in the Unity inspector). Note that if you opened the Unity editor since the previous step, the `.meta` files may have been deleted and will have to be re-added.
+1. Obtain the Steamworks SDK files and merge its `redistributable_bin` folder with the one in this repo. This will make Unity rely on the `.meta` files included here to configure which platform each binary should be loaded for (you can check these settings in the Unity inspector). Note that if you opened the Unity editor since the previous step, the `.meta` files may have been deleted and will have to be re-added.
 1. For development only, place a `steam_appid.txt` file at the root of the Unity project. It should contain the game's steam app ID (commonly `480` for testing, representing the game Spacewar). Remember not to ship this file in distribution builds.
 1. Add the `NetworkManager` component to an object in your Unity scene (typically left empty and also called `NetworkManager`).
 1. Place other components as needed (TODO: more docs).
