@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using Steamworksnt.SteamworksApi;
 
-namespace Steamworksnt.Internal
+namespace Steamworksnt
 {
     public static class Networking
     {

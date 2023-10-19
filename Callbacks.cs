@@ -1,7 +1,7 @@
 using System;
 using Steamworksnt.SteamworksApi;
 
-namespace Steamworksnt.Internal
+namespace Steamworksnt
 {
     public static class Callbacks
     {
