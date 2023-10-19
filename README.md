@@ -6,15 +6,13 @@ There is no build step - you can use this code directly in your Unity/C# project
 
 Not all SDK functions are included in `Api.cs`, but you can easily add any you would like to call.
 
+This repo is currently set up for the Steamworks SDK v1.57. Keeping it up to date should be simple, as there seems to be an effort to avoid breaking changes to the SDK by its maintainers at Valve.
+
 ## Why
 
 The Steamworks SDK is based on C++ and thus is not straightforward to interop with from C# code. One has to use P/Invoke, a way to call functions declared in binary files (such as `.dll` on Windows).
 
 Existing wrappers such as Steamworks.NET or Facepunch.Steamworks can be opaque and stale, with multiple open issues and PRs at time of writing. I believe it is worth working directly with the Steamworks binaries and bringing the API calls into one's own code. That way you can understand what's going on under the hood, update SDK versions at any time, and make use of functionality you may have not otherwise.
-
-## Version
-
-This repo is currently set up for the Steamworks SDK v1.57. Keeping it up to date should be simple, as there seems to be an effort to avoid breaking changes to the SDK by its maintainers at Valve.
 
 ## Setting up
 
