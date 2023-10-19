@@ -13,9 +13,9 @@ namespace Steamworksnt.SteamworksApi
     public struct CallbackMsg_t
     {
         public Int32 hSteamUser; // Specific user to whom this callback applies.
-        public Int32 iCallback; // Callback identifier.  (Corresponds to the k_iCallback enum in the callback structure.)
+        public Callback iCallback; // Callback identifier.  (Corresponds to the k_iCallback enum in the callback structure.)
 
-        // uint8 *m_pubParam
+        // Equivalent to "uint8 *m_pubParam".
         public IntPtr pubParam; // Points to the callback structure
         public Int32 cubParam; // Size of the data pointed to by m_pubParam
     };

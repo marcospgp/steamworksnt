@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Steamworksnt.SteamworksApi;
 
 namespace Steamworksnt
@@ -6,6 +7,8 @@ namespace Steamworksnt
     public static class Callbacks
     {
         private static Int32 hSteamPipe;
+
+        private static Dictionary<int, string> _callbacksById;
 
         /// <summary>
         /// Must be called once before anything else on this class.
@@ -43,15 +46,37 @@ namespace Steamworksnt
                 finally
                 {
                     Api.SteamAPI_ManualDispatch_FreeLastCallback(hSteamPipe);
+                    data = default;
                 }
             }
         }
 
+        private static Dictionary<int, string> GetCallbacksById()
+        {
+            if (_callbacksById == null)
+            {
+                _callbacksById = new Dictionary<int, string>();
+
+                string[] names = Enum.GetNames(typeof(Callback));
+                int[] ids = (int[])Enum.GetValues(typeof(Callback));
+
+                for (int i = 0; i < ids.Length; i++)
+                {
+                    _callbacksById.Add(ids[i], names[i]);
+                }
+            }
+
+            return _callbacksById;
+        }
+
         private static void OnCallback(CallbackMsg_t data)
         {
-            UnityEngine.Debug.Log(
-                $"got steam callback with type {data.iCallback}. See k_iCallback enum to decode."
-            );
+            var callbacksById = GetCallbacksById();
+
+            UnityEngine.Debug.Log($"Got Steamworks SDK callback \"{data.iCallback}\".");
+            UnityEngine.Debug.Log($"data.hSteamUser: {data.hSteamUser}");
+            UnityEngine.Debug.Log($"data.pubParam: {data.pubParam}");
+            UnityEngine.Debug.Log($"data.cubParam: {data.cubParam}");
             // TODO: handle callbacks
         }
     }
