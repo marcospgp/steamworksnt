@@ -2,7 +2,7 @@
 
 An example of how to interface with the Steamworks SDK (C++) from C# in Unity.
 
-There is no build step - you can use this code directly in your Unity project.
+There is no build step - you can use this code directly in your Unity/C# project.
 
 Not all SDK functions are included in `Api.cs`, but you can easily add any you would like to call.
 
