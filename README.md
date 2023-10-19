@@ -20,25 +20,7 @@ Existing wrappers such as Steamworks.NET or Facepunch.Steamworks can be opaque a
 1. Obtain the Steamworks SDK files and merge its `redistributable_bin` folder with the one in this repo. This will make Unity rely on the `.meta` files included here to configure which platform each binary should be loaded for (you can check these settings in the Unity inspector). Note that if you opened the Unity editor since the previous step, the `.meta` files may have been deleted and will have to be re-added.
 1. For development only, place a `steam_appid.txt` file at the root of your Unity project. It should contain the game's Steam app ID (commonly `480` for testing, representing the game Spacewar). Remember not to ship this file in distribution builds.
 
-## Folder structure
-
-### sdk
-
-Contains necessary files from the Steamworks SDK (not included).
-
-Note that each file in redistributable_bin is configured in the Unity inspector (thus having a corresponding .meta file in this repo) according to its target platform (OS & 32 or 64 bit). All of these files are set to be included in all platforms (although not sure if this remains true when adding support for new platforms into the project), and "load on startup" is left unchecked as it does not seem to be required.
-
-The SDK's `Readme.txt` is also included in order to keep track of SDK version.
-
 Note that when updating the binary for MacOS, it may be necessary to run `sudo xattr -r -d com.apple.quarantine libsteam_api.dylib` in `sdk/redistributable_bin/osx`. Otherwise, Unity will display an error pop-up when attempting to load it.
-
-### SteamworksAPI
-
-C# classes that act as an entrypoint into the Steamworks SDK. These classes use C#'s P/Invoke functionality (with `DllImport()`) to call into the SDK binaries.
-
-### Internal
-
-Functionality that is abstracted away from Unity `MonoBehaviour` components.
 
 ## Debugging
 
