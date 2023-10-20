@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Steamworksnt.SteamworksApi;
 
@@ -7,6 +8,9 @@ namespace Steamworksnt
     public static class Callbacks
     {
         private static Int32 hSteamPipe;
+        private static readonly HashSet<Int32> callbackIds = new HashSet<Int32>(
+            (Int32[])Enum.GetValues(typeof(Callback))
+        );
 
         /// <summary>
         /// Must be called once before anything else on this class.
@@ -21,9 +25,8 @@ namespace Steamworksnt
 
         /// <summary>
         /// This should be called once per frame (that is, in Update()), as it
-        /// is similar to SteamAPI_RunCallbacks() about which the Steamworks SDK
-        /// docs say "Most games call this once per render-frame".
-        /// TODO: Consider making this async.
+        /// is similar to "SteamAPI_RunCallbacks()" about which the Steamworks
+        /// SDK docs say "Most games call this once per render-frame".
         /// </summary>
         public static void RunFrame()
         {
@@ -56,11 +59,18 @@ namespace Steamworksnt
         {
             // Some callbacks are received with an unrecognized ID, which we ignore.
             // See more: https://github.com/Facepunch/Facepunch.Steamworks/issues/507#issuecomment-1771804971
+            if (!callbackIds.Contains((Int32)callback.m_iCallback))
+            {
+                return;
+            }
 
-            UnityEngine.Debug.Log($"Got Steamworks SDK callback \"{callback.m_iCallback}\".");
-            UnityEngine.Debug.Log($"callback.m_hSteamUser: {callback.m_hSteamUser}");
-            UnityEngine.Debug.Log($"callback.m_pubParam: {callback.m_pubParam}");
-            UnityEngine.Debug.Log($"callback.m_cubParam: {callback.m_cubParam}");
+            UnityEngine.Debug.Log(
+                "(Steamworks SDK callback)\n\n"
+                    + $"{callback.m_iCallback}\n\n"
+                    + $"m_hSteamUser: {callback.m_hSteamUser}\n"
+                    + $"m_pubParam: {callback.m_pubParam}\n"
+                    + $"m_cubParam: {callback.m_cubParam}\n"
+            );
 
             // Special case - asynchronous Steamworks SDK API calls.
             if (callback.m_iCallback == Callback.SteamAPICallCompleted_t)
@@ -85,24 +95,42 @@ namespace Steamworksnt
                     hSteamPipe,
                     call.m_hAsyncCall,
                     resultPtr,
-                    callback.m_cubParam,
-                    callback.m_iCallback,
+                    // Not sure if these two parameters should be from "call" or
+                    // "callback". Steamworks SDK code example seems to suggest
+                    // it should be "callback", but that doesn't make much
+                    // sense.
+                    (int)call.m_cubParam,
+                    (Callback)call.m_iCallback,
                     ref failed
                 );
 
                 if (!success)
                 {
-                    throw new Exception(
-                        "Failed to get Steamworks SDK asynchronous API call result."
-                    );
+                    // Steamworks SDK code example in "steam_api.h" ignores this
+                    // scenario.
+                    // Initially we threw an error here, but that error was
+                    // being thrown even when no API call result was expected
+                    // (no async SDK method had been called).
+                    // Maybe this is related to how we get unrecognized
+                    // callbacks (with IDs that are not part of the callback
+                    // IDs enum).
+                    return;
                 }
 
                 if (failed)
                 {
                     throw new Exception(
-                        "Failure signaled by Steamworks SDK when attempting to fetch asynchronous API call result."
+                        "Failure signaled by Steamworks SDK when attempting to "
+                            + "fetch asynchronous API call result."
                     );
                 }
+
+                UnityEngine.Debug.Log(
+                    $"Got Steamworks SDK API call completed callback:"
+                        + $"call.m_hAsyncCall: {call.m_hAsyncCall}"
+                        + $"call.m_iCallback: {call.m_iCallback}"
+                        + $"call.m_cubParam: {call.m_cubParam}"
+                );
 
                 // TODO: When implementing an actual API call, set things up so
                 // caller specifies type of struct they are expecting, then we

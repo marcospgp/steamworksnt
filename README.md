@@ -22,6 +22,19 @@ Existing wrappers such as Steamworks.NET or Facepunch.Steamworks can be opaque a
 
 Note that when updating the binary for MacOS, it may be necessary to run `sudo xattr -r -d com.apple.quarantine libsteam_api.dylib` in `sdk/redistributable_bin/osx`. Otherwise, Unity will display an error pop-up when attempting to load it.
 
+## Usage
+
+### Initialization & shutdown
+
+1. Call `Steamworks.Init()` before anything else and handle its result accordingly (a restart may be required by Steam, for example)
+1. Call `Callbacks.RunFrame()` once per frame (in `Update()`)
+1. Call `Steamworks.Shutdown()` in an `Application.quitting` event handler
+
+### Making use of the SDK
+
+Check other root-level files for additional exposed functionality.
+Alternatively, accessing the API directly through the `Api` class is also possible.
+
 ## Debugging
 
 When debugging the Steam SDK one has to check the Unity log file directly with

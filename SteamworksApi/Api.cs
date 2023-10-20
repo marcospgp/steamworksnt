@@ -94,7 +94,7 @@ namespace Steamworksnt.SteamworksApi
         [DllImport(DLL_FILENAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern ESteamNetworkingAvailability SteamAPI_ISteamNetworkingUtils_GetRelayNetworkStatus(
             IntPtr iSteamNetworkingUtils,
-            ref SteamRelayNetworkStatus_t pDetails
+            out SteamRelayNetworkStatus_t pDetails
         );
 
         #endregion
