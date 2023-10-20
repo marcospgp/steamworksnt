@@ -28,9 +28,9 @@ When debugging the Steam SDK one has to check the Unity log file directly with
 
 `tail -f  ~/Library/Logs/Unity/Editor.log` (MacOS)
 
-as logs for native (C++) plugins are not shown in the in-editor console.
+as logs for native plugins are not shown in the in-editor console. For example, `SteamAPI_Init()` can return `false` and only log the failure reason to stderr.
 
-For example, `SteamAPI_Init()` can return `false` and only log the failure reason to stderr.
+Logs from the Steamworks SDK should be prefixed with `[S_API]`.
 
 ## Callbacks
 

@@ -1,7 +1,9 @@
+using System;
+
 namespace Steamworksnt.SteamworksApi
 {
     // Callback enums taken from "steam_api.json".
-    public enum Callback
+    public enum Callback : Int32
     {
         SteamServersConnected_t = 101,
         SteamServerConnectFailure_t = 102,

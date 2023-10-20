@@ -67,6 +67,17 @@ namespace Steamworksnt.SteamworksApi
         [DllImport(DLL_FILENAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern void SteamAPI_ManualDispatch_FreeLastCallback(Int32 hSteamPipe);
 
+        [DllImport(DLL_FILENAME, CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.I1)]
+        public static extern bool SteamAPI_ManualDispatch_GetAPICallResult(
+            Int32 hSteamPipe,
+            UInt64 hSteamAPICall,
+            IntPtr pCallback,
+            Int32 cubCallback,
+            Callback iCallbackExpected,
+            [MarshalAs(UnmanagedType.U1)] ref bool pbFailed
+        );
+
         #endregion
 
         #region SteamNetworkingUtils

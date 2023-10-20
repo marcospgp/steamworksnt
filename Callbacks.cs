@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Steamworksnt.SteamworksApi;
 
 namespace Steamworksnt
@@ -7,8 +7,6 @@ namespace Steamworksnt
     public static class Callbacks
     {
         private static Int32 hSteamPipe;
-
-        private static Dictionary<int, string> _callbacksById;
 
         /// <summary>
         /// Must be called once before anything else on this class.
@@ -31,13 +29,17 @@ namespace Steamworksnt
         {
             Api.SteamAPI_ManualDispatch_RunFrame(hSteamPipe);
 
-            CallbackMsg_t data = default;
+            // Declared before while loop for efficiency, could be declared as
+            // an "out" parameter below instead. This would make it easier to
+            // catch potential SDK issues by noticing an uninitialized callback
+            // struct.
+            CallbackMsg_t callback = default;
 
-            while (Api.SteamAPI_ManualDispatch_GetNextCallback(hSteamPipe, ref data))
+            while (Api.SteamAPI_ManualDispatch_GetNextCallback(hSteamPipe, ref callback))
             {
                 try
                 {
-                    OnCallback(data);
+                    OnCallback(callback);
                 }
                 catch (Exception e)
                 {
@@ -46,38 +48,70 @@ namespace Steamworksnt
                 finally
                 {
                     Api.SteamAPI_ManualDispatch_FreeLastCallback(hSteamPipe);
-                    data = default;
                 }
             }
         }
 
-        private static Dictionary<int, string> GetCallbacksById()
+        private static void OnCallback(CallbackMsg_t callback)
         {
-            if (_callbacksById == null)
+            // Some callbacks are received with an unrecognized ID, which we ignore.
+            // See more: https://github.com/Facepunch/Facepunch.Steamworks/issues/507#issuecomment-1771804971
+
+            UnityEngine.Debug.Log($"Got Steamworks SDK callback \"{callback.m_iCallback}\".");
+            UnityEngine.Debug.Log($"callback.m_hSteamUser: {callback.m_hSteamUser}");
+            UnityEngine.Debug.Log($"callback.m_pubParam: {callback.m_pubParam}");
+            UnityEngine.Debug.Log($"callback.m_cubParam: {callback.m_cubParam}");
+
+            // Special case - asynchronous Steamworks SDK API calls.
+            if (callback.m_iCallback == Callback.SteamAPICallCompleted_t)
             {
-                _callbacksById = new Dictionary<int, string>();
-
-                string[] names = Enum.GetNames(typeof(Callback));
-                int[] ids = (int[])Enum.GetValues(typeof(Callback));
-
-                for (int i = 0; i < ids.Length; i++)
-                {
-                    _callbacksById.Add(ids[i], names[i]);
-                }
+                HandleApiCallCompleted(callback);
             }
-
-            return _callbacksById;
         }
 
-        private static void OnCallback(CallbackMsg_t data)
+        private static void HandleApiCallCompleted(CallbackMsg_t callback)
         {
-            var callbacksById = GetCallbacksById();
+            SteamAPICallCompleted_t call = Marshal.PtrToStructure<SteamAPICallCompleted_t>(
+                callback.m_pubParam
+            );
 
-            UnityEngine.Debug.Log($"Got Steamworks SDK callback \"{data.iCallback}\".");
-            UnityEngine.Debug.Log($"data.hSteamUser: {data.hSteamUser}");
-            UnityEngine.Debug.Log($"data.pubParam: {data.pubParam}");
-            UnityEngine.Debug.Log($"data.cubParam: {data.cubParam}");
-            // TODO: handle callbacks
+            IntPtr resultPtr = Marshal.AllocHGlobal((int)callback.m_cubParam);
+
+            try
+            {
+                bool failed = false;
+
+                bool success = Api.SteamAPI_ManualDispatch_GetAPICallResult(
+                    hSteamPipe,
+                    call.m_hAsyncCall,
+                    resultPtr,
+                    callback.m_cubParam,
+                    callback.m_iCallback,
+                    ref failed
+                );
+
+                if (!success)
+                {
+                    throw new Exception(
+                        "Failed to get Steamworks SDK asynchronous API call result."
+                    );
+                }
+
+                if (failed)
+                {
+                    throw new Exception(
+                        "Failure signaled by Steamworks SDK when attempting to fetch asynchronous API call result."
+                    );
+                }
+
+                // TODO: When implementing an actual API call, set things up so
+                // caller specifies type of struct they are expecting, then we
+                // can create and populate it from "resultPtr".
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(resultPtr);
+            }
         }
     }
 }

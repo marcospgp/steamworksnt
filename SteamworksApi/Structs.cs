@@ -7,22 +7,32 @@ namespace Steamworksnt.SteamworksApi
 {
     #region Callback structs
 
-    // General callback message struct.
-    // Comments included are from Steamworks SDK.
+    /// <summary>
+    /// General callback message struct.
+    /// Comments included are from Steamworks SDK.
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = Api.PLATFORM_STRUCT_PACK_SIZE)]
     public struct CallbackMsg_t
     {
-        public Int32 hSteamUser; // Specific user to whom this callback applies.
-        public Callback iCallback; // Callback identifier.  (Corresponds to the k_iCallback enum in the callback structure.)
+        public Int32 m_hSteamUser; // Specific user to whom this callback applies.
+        public Callback m_iCallback; // Callback identifier.  (Corresponds to the k_iCallback enum in the callback structure.)
 
-        // Equivalent to "uint8 *m_pubParam".
-        public IntPtr pubParam; // Points to the callback structure
-        public Int32 cubParam; // Size of the data pointed to by m_pubParam
+        // Corresponds to "uint8 *m_pubParam".
+        public IntPtr m_pubParam; // Points to the callback structure
+        public Int32 m_cubParam; // Size of the data pointed to by m_pubParam
     };
 
     /// <summary>
-    /// callback_id: 1281
+    /// Asynchronous API call result struct.
     /// </summary>
+    [StructLayout(LayoutKind.Sequential, Pack = Api.PLATFORM_STRUCT_PACK_SIZE)]
+    public struct SteamAPICallCompleted_t
+    {
+        public UInt64 m_hAsyncCall; // UInt64 corresponds to SteamAPICall_t.
+        public Int32 m_iCallback;
+        public UInt32 m_cubParam;
+    }
+
     [StructLayout(LayoutKind.Sequential, Pack = Api.PLATFORM_STRUCT_PACK_SIZE)]
     public struct SteamRelayNetworkStatus_t
     {
