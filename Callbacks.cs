@@ -7,8 +7,8 @@ namespace Steamworksnt
 {
     public static class Callbacks
     {
-        private static Int32 hSteamPipe;
-        private static readonly HashSet<Int32> callbackIds = new HashSet<Int32>(
+        private static readonly Int32 hSteamPipe = Api.SteamAPI_GetHSteamPipe();
+        private static readonly HashSet<Int32> validCallbackIds = new HashSet<Int32>(
             (Int32[])Enum.GetValues(typeof(Callback))
         );
 
@@ -19,8 +19,6 @@ namespace Steamworksnt
         {
             // We use manual callbacks and do not call SteamAPI_RunCallbacks().
             Api.SteamAPI_ManualDispatch_Init();
-
-            hSteamPipe = Api.SteamAPI_GetHSteamPipe();
         }
 
         /// <summary>
@@ -59,7 +57,7 @@ namespace Steamworksnt
         {
             // Some callbacks are received with an unrecognized ID, which we ignore.
             // See more: https://github.com/Facepunch/Facepunch.Steamworks/issues/507#issuecomment-1771804971
-            if (!callbackIds.Contains((Int32)callback.m_iCallback))
+            if (!validCallbackIds.Contains((Int32)callback.m_iCallback))
             {
                 return;
             }

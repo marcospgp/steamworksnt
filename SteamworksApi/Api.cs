@@ -80,6 +80,53 @@ namespace Steamworksnt.SteamworksApi
 
         #endregion
 
+        #region SteamFriends
+
+        /// <returns> ISteamFriends* </returns>
+        [DllImport(DLL_FILENAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr SteamAPI_SteamFriends_v017();
+
+        [DllImport(DLL_FILENAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int SteamAPI_ISteamFriends_GetFriendCount(
+            IntPtr iSteamFriends,
+            int iFriendFlags
+        );
+
+        /// <returns> uint64_steamid </returns>
+        [DllImport(DLL_FILENAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern UInt64 SteamAPI_ISteamFriends_GetFriendByIndex(
+            IntPtr iSteamFriends,
+            int iFriend,
+            int iFriendFlags
+        );
+
+        [DllImport(DLL_FILENAME, CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.I1)]
+        public static extern bool SteamAPI_ISteamFriends_GetFriendGamePlayed(
+            IntPtr iSteamFriends,
+            UInt64 steamIDFriend,
+            IntPtr friendGameInfo
+        );
+
+        /// <returns> const char * </returns>
+        [DllImport(DLL_FILENAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr SteamAPI_ISteamFriends_GetFriendPersonaName(
+            IntPtr iSteamFriends,
+            UInt64 steamIDFriend
+        );
+
+        #endregion
+
+        #region SteamNetworkingIdentity
+
+        [DllImport(DLL_FILENAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern void SteamAPI_SteamNetworkingIdentity_SetSteamID(
+            ref SteamNetworkingIdentity self,
+            UInt64 steamID
+        );
+
+        #endregion
+
         #region SteamNetworkingUtils
 
         /// <returns> ISteamNetworkingUtils* </returns>
@@ -114,6 +161,17 @@ namespace Steamworksnt.SteamworksApi
             Int32 nSendFlags,
             Int32 nRemoteChannel
         );
+
+        #endregion
+
+        #region SteamUser
+
+        /// <returns> ISteamUser* </returns>
+        [DllImport(DLL_FILENAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr SteamAPI_SteamUser_v023();
+
+        [DllImport(DLL_FILENAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern UInt64 SteamAPI_ISteamUser_GetSteamID(IntPtr iSteamUser);
 
         #endregion
 

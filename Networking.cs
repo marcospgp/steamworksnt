@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Text;
+using System.Threading.Tasks;
 using Steamworksnt.SteamworksApi;
 using UnityEngine;
 
@@ -21,7 +22,15 @@ namespace Steamworksnt
             // Let Steam know we intend to use their relay network (init early).
             Api.SteamAPI_ISteamNetworkingUtils_InitRelayNetworkAccess(iSteamNetworkingUtils);
 
-            // _ = StartCoroutine(SendMessages());
+            _ = Task.Run(async () =>
+            {
+                await Task.Delay(1234);
+                SendMessage($"Sending my time: {DateTime.Now}");
+                await Task.Delay(1234);
+                SendMessage($"Sending my time: {DateTime.Now}");
+                await Task.Delay(1234);
+                SendMessage($"Sending my time: {DateTime.Now}");
+            });
         }
 
         public static void SendMessage(string message)
@@ -40,17 +49,6 @@ namespace Steamworksnt
             );
 
             UnityEngine.Debug.Log($"Got result: {result}");
-        }
-
-        private static IEnumerator SendMessages()
-        {
-            // yield return new WaitForSecondsRealtime(5f);
-
-            for (int i = 0; i < 100; i++)
-            {
-                Networking.SendMessage(i.ToString());
-                yield return new WaitForSecondsRealtime(1f);
-            }
         }
     }
 }
