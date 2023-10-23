@@ -80,6 +80,16 @@ namespace Steamworksnt.SteamworksApi
 
         #endregion
 
+        #region SteamClient
+
+        /*
+            I considered using "SteamAPI_ISteamClient_SetWarningMessageHook"
+            at one point, but there was no way to get an "ISteamClient*"
+            from the Steamworks SDK's exposed API.
+        */
+
+        #endregion
+
         #region SteamFriends
 
         /// <returns> ISteamFriends* </returns>
@@ -160,6 +170,20 @@ namespace Steamworksnt.SteamworksApi
             UInt32 cubData, // Size of data to send
             Int32 nSendFlags,
             Int32 nRemoteChannel
+        );
+
+        #endregion
+
+        #region SteamUtils
+
+        /// <returns> ISteamUtils* </returns>
+        [DllImport(DLL_FILENAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr SteamAPI_SteamUtils_v010();
+
+        [DllImport(DLL_FILENAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern void SteamAPI_ISteamUtils_SetWarningMessageHook(
+            IntPtr iSteamUtils,
+            SteamAPIWarningMessageHook_t pFunction
         );
 
         #endregion

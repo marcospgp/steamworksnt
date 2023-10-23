@@ -28,6 +28,7 @@ namespace Steamworksnt
         /// </summary>
         public static void RunFrame()
         {
+            UnityEngine.Debug.Log($"hsteampipe: {hSteamPipe}");
             Api.SteamAPI_ManualDispatch_RunFrame(hSteamPipe);
 
             // Declared before while loop for efficiency, could be declared as

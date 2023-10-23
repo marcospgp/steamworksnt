@@ -37,19 +37,21 @@ Alternatively, accessing the API directly through the `Api` class is also possib
 
 ## Debugging
 
+(See [Debugging the Steamworks API](https://partner.steamgames.com/doc/sdk/api/debugging) for more info)
+
+### Log file
+
 When debugging the Steam SDK one has to check the Unity log file directly with
 
 `tail -f  ~/Library/Logs/Unity/Editor.log` (MacOS)
 
-as logs for native plugins are not shown in the in-editor console. For example, `SteamAPI_Init()` can return `false` and only log the failure reason to stderr.
+as logs for native plugins are not shown in the in-editor console. For example, `SteamAPI_Init()` can return `false`, with the failure reason only being logged to `Editor.log`.
 
-Logs from the Steamworks SDK should be prefixed with `[S_API]`.
+Lines in `Editor.log` from the Steamworks SDK should be prefixed with `[S_API]`.
 
-## Callbacks
+### Steam flags
 
-We do not call `SteamAPI_RunCallbacks()` because we handle callbacks manually. This is required since Steam's way of handling callbacks is specific to C++.
-
-Callback types are identified by a number, which can be referenced in `steam_api.json` under `callback_structs` (using the `callback_id` field).
+Open steam in debugging mode with `open /Applications/Steam.app --args -console -debug_steamapi`.
 
 ## Calling C++ from C#
 
@@ -82,6 +84,12 @@ Even though `__cdecl` is set to an empty string in `steam_api_common.h` for non-
 ### Marshaling booleans
 
 Use `[return: MarshalAs(UnmanagedType.U1)]` when P/Invoking methods that return booleans (see https://learn.microsoft.com/en-us/visualstudio/code-quality/ca1414).
+
+## Callbacks
+
+We do not call `SteamAPI_RunCallbacks()` because we handle callbacks manually. This is required since Steam's way of handling callbacks is specific to C++.
+
+Callback types are identified by a number, which can be referenced in `steam_api.json` under `callback_structs` (using the `callback_id` field).
 
 ## License
 
