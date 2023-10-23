@@ -13,8 +13,8 @@ namespace Steamworksnt.SteamworksApi
         private const string DLL_FILENAME = "steam_api";
         public const int PLATFORM_STRUCT_PACK_SIZE = 8;
 #elif (UNITY_EDITOR_LINUX || UNITY_STANDALONE_LINUX || UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX)
-        public const int PLATFORM_STRUCT_PACK_SIZE = 4;
         private const string DLL_FILENAME = "libsteam_api";
+        public const int PLATFORM_STRUCT_PACK_SIZE = 4;
 #else
         // Default to 64-bit Windows.
         private const string DLL_FILENAME = "steam_api64";

@@ -29,7 +29,7 @@ namespace Steamworksnt.SteamworksApi
     public struct SteamAPICallCompleted_t
     {
         public UInt64 m_hAsyncCall; // UInt64 corresponds to SteamAPICall_t.
-        public Int32 m_iCallback;
+        public Callback m_iCallback;
         public UInt32 m_cubParam;
     }
 

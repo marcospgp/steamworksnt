@@ -7,10 +7,6 @@ namespace Steamworksnt
 {
     public static class Steamworks
     {
-        public static IntPtr iSteamUtils;
-        public static IntPtr iSteamNetworkingMessages;
-        public static IntPtr iSteamNetworkingUtils;
-
         /// <summary>
         /// Init Steamworks SDK before any code has a chance to call it.
         /// </summary>
@@ -18,7 +14,7 @@ namespace Steamworksnt
         private static void Init()
         {
             // Shut down Steamworks SDK when quitting.
-            Application.quitting += () => Steamworks.Shutdown();
+            Application.quitting += () => Api.SteamAPI_Shutdown();
 
             if (Api.SteamAPI_RestartAppIfNecessary())
             {
@@ -40,36 +36,21 @@ namespace Steamworksnt
                 throw new Exception("Unable to init Steam SDK. See logs for more details.");
             }
 
-            Callbacks.Init();
-
-            // Obtain interface pointers.
-            iSteamUtils = Api.SteamAPI_SteamUtils_v010();
-            iSteamNetworkingMessages = Api.SteamAPI_SteamNetworkingMessages_SteamAPI_v002();
-            iSteamNetworkingUtils = Api.SteamAPI_SteamNetworkingUtils_SteamAPI_v004();
-
             // Hook warning & debug messages
             Api.SteamAPI_ISteamUtils_SetWarningMessageHook(
-                iSteamUtils,
+                Api.SteamAPI_SteamUtils_v010(),
                 Steamworks.OnWarningMessage
             );
+
+            Callbacks.Init();
 
             UnityEngine.Debug.Log("Steamworks SDK init successful.");
         }
 
-        /// <summary>
-        /// Call this during application shutdown. Steam doesn't say this is
-        /// required, only to do so "if possible".
-        /// </summary>
-        public static void Shutdown()
-        {
-            Api.SteamAPI_Shutdown();
-        }
-
         private static void OnWarningMessage(Int32 nSeverity, IntPtr pchDebugText)
         {
-            UnityEngine.Debug.Log($"Steamworks SDK warning (severity {nSeverity})");
-
-            UnityEngine.Debug.Log(Marshal.PtrToStringUni(pchDebugText));
+            UnityEngine.Debug.LogWarning($"Steamworks SDK warning (severity {nSeverity}):");
+            UnityEngine.Debug.LogWarning(Marshal.PtrToStringUni(pchDebugText));
         }
     }
 }

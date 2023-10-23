@@ -7,7 +7,6 @@ namespace Steamworksnt
 {
     public static class Callbacks
     {
-        private static readonly Int32 hSteamPipe = Api.SteamAPI_GetHSteamPipe();
         private static readonly HashSet<Int32> validCallbackIds = new HashSet<Int32>(
             (Int32[])Enum.GetValues(typeof(Callback))
         );
@@ -28,7 +27,13 @@ namespace Steamworksnt
         /// </summary>
         public static void RunFrame()
         {
-            UnityEngine.Debug.Log($"hsteampipe: {hSteamPipe}");
+            Int32 hSteamPipe = Api.SteamAPI_GetHSteamPipe();
+
+            if (hSteamPipe == 0)
+            {
+                return;
+            }
+
             Api.SteamAPI_ManualDispatch_RunFrame(hSteamPipe);
 
             // Declared before while loop for efficiency, could be declared as
@@ -80,11 +85,24 @@ namespace Steamworksnt
 
         private static void HandleApiCallCompleted(CallbackMsg_t callback)
         {
+            Int32 hSteamPipe = Api.SteamAPI_GetHSteamPipe();
+
             SteamAPICallCompleted_t call = Marshal.PtrToStructure<SteamAPICallCompleted_t>(
                 callback.m_pubParam
             );
 
-            IntPtr resultPtr = Marshal.AllocHGlobal((int)callback.m_cubParam);
+            // /!\ Important: not ignoring API call results with invalid IDs
+            // was causing crashes with seemingly random stack traces on the
+            // Unity editor log.
+            // Note we also receive callbacks with invalid IDs, not just API
+            // call results (and even when no SDK method that should trigger one
+            // had been called).
+            if (!validCallbackIds.Contains((Int32)call.m_iCallback))
+            {
+                return;
+            }
+
+            IntPtr resultPtr = Marshal.AllocHGlobal(callback.m_cubParam);
 
             try
             {

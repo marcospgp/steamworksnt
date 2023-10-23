@@ -6,6 +6,9 @@ namespace Steamworksnt
 {
     public static class Networking
     {
+        private static IntPtr iSteamNetworkingMessages =
+            Api.SteamAPI_SteamNetworkingMessages_SteamAPI_v002();
+
         /// <summary>
         /// This should be called once before using this class.
         /// </summary>
@@ -22,7 +25,7 @@ namespace Steamworksnt
             byte[] bytes = Encoding.UTF8.GetBytes(message);
 
             EResult result = Api.SteamAPI_ISteamNetworkingMessages_SendMessageToUser(
-                Steamworks.iSteamNetworkingMessages,
+                iSteamNetworkingMessages,
                 new SteamNetworkingIdentity(),
                 bytes,
                 (uint)bytes.Length,
