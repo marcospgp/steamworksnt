@@ -81,9 +81,18 @@ Even though `__cdecl` is set to an empty string in `steam_api_common.h` for non-
 
 `Cdecl` is still the default in that case so it will still work.
 
-### Marshaling booleans
+### Marshaling
 
-Use `[return: MarshalAs(UnmanagedType.U1)]` when P/Invoking methods that return booleans (see https://learn.microsoft.com/en-us/visualstudio/code-quality/ca1414).
+Tips on converting types when receiving or passing values from P/Invoke method calls.
+
+#### Booleans
+
+Use `[MarshalAs(UnmanagedType.U1)]` and `[return: MarshalAs(UnmanagedType.U1)]` when passing or receiving booleans (see https://learn.microsoft.com/en-us/visualstudio/code-quality/ca1414).
+
+#### Strings
+
+- When receiving strings, use `Marshal.PtrToStringUTF8()`
+- When adding strings to shared structs, use `[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]` (replace 256 with the actual string size)
 
 ## Callbacks
 

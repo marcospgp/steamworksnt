@@ -58,7 +58,7 @@ namespace Steamworksnt.SteamworksApi
         public static extern void SteamAPI_ManualDispatch_RunFrame(Int32 hSteamPipe);
 
         [DllImport(DLL_FILENAME, CallingConvention = CallingConvention.Cdecl)]
-        [return: MarshalAs(UnmanagedType.I1)]
+        [return: MarshalAs(UnmanagedType.U1)]
         public static extern bool SteamAPI_ManualDispatch_GetNextCallback(
             Int32 hSteamPipe,
             ref CallbackMsg_t msg
@@ -68,7 +68,7 @@ namespace Steamworksnt.SteamworksApi
         public static extern void SteamAPI_ManualDispatch_FreeLastCallback(Int32 hSteamPipe);
 
         [DllImport(DLL_FILENAME, CallingConvention = CallingConvention.Cdecl)]
-        [return: MarshalAs(UnmanagedType.I1)]
+        [return: MarshalAs(UnmanagedType.U1)]
         public static extern bool SteamAPI_ManualDispatch_GetAPICallResult(
             Int32 hSteamPipe,
             UInt64 hSteamAPICall,
@@ -92,6 +92,12 @@ namespace Steamworksnt.SteamworksApi
 
         #region SteamFriends
 
+        [DllImport(DLL_FILENAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern void SteamAPI_ISteamFriends_ActivateGameOverlay(
+            IntPtr iSteamFriends,
+            string pchDialog
+        );
+
         /// <returns> ISteamFriends* </returns>
         [DllImport(DLL_FILENAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr SteamAPI_SteamFriends_v017();
@@ -99,13 +105,7 @@ namespace Steamworksnt.SteamworksApi
         [DllImport(DLL_FILENAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern int SteamAPI_ISteamFriends_GetFriendCount(
             IntPtr iSteamFriends,
-            int iFriendFlags
-        );
-
-        [DllImport(DLL_FILENAME, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void SteamAPI_ISteamFriends_ActivateGameOverlay(
-            IntPtr iSteamFriends,
-            string pchDialog
+            EFriendFlags iFriendFlags
         );
 
         /// <returns> uint64_steamid </returns>
@@ -113,11 +113,11 @@ namespace Steamworksnt.SteamworksApi
         public static extern UInt64 SteamAPI_ISteamFriends_GetFriendByIndex(
             IntPtr iSteamFriends,
             int iFriend,
-            int iFriendFlags
+            EFriendFlags iFriendFlags
         );
 
         [DllImport(DLL_FILENAME, CallingConvention = CallingConvention.Cdecl)]
-        [return: MarshalAs(UnmanagedType.I1)]
+        [return: MarshalAs(UnmanagedType.U1)]
         public static extern bool SteamAPI_ISteamFriends_GetFriendGamePlayed(
             IntPtr iSteamFriends,
             UInt64 steamIDFriend,
@@ -127,6 +127,12 @@ namespace Steamworksnt.SteamworksApi
         /// <returns> const char * </returns>
         [DllImport(DLL_FILENAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr SteamAPI_ISteamFriends_GetFriendPersonaName(
+            IntPtr iSteamFriends,
+            UInt64 steamIDFriend
+        );
+
+        [DllImport(DLL_FILENAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern EPersonaState SteamAPI_ISteamFriends_GetFriendPersonaState(
             IntPtr iSteamFriends,
             UInt64 steamIDFriend
         );

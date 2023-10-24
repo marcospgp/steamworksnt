@@ -1,8 +1,12 @@
 using System;
 
-namespace Steamworksnt.SteamworksApi
+// Enums are exposed on the root namespace as they are likely to be consumed
+// externally, such as being passed in as parameters.
+namespace Steamworksnt
 {
-    // Callback enums taken from "steam_api.json".
+    /// <summary>
+    /// Callback enums taken from "steam_api.json".
+    /// </summary>
     public enum Callback : Int32
     {
         SteamServersConnected_t = 101,
@@ -227,6 +231,50 @@ namespace Steamworksnt.SteamworksApi
         // GSStatsUnloaded_t = 1108,
         SteamNetworkingFakeIPResult_t = 1223,
     }
+
+    /// <summary>
+    /// Friend flags.
+    /// Note that to represent regular friends one should use
+    /// "k_EFriendFlagImmediate".
+    /// https://partner.steamgames.com/doc/api/ISteamFriends#EFriendFlags
+    /// </summary>
+    public enum EFriendFlags : Int32
+    {
+        k_EFriendFlagNone = 0x00,
+        k_EFriendFlagBlocked = 0x01,
+        k_EFriendFlagFriendshipRequested = 0x02,
+        k_EFriendFlagImmediate = 0x04, // "regular" friend
+        k_EFriendFlagClanMember = 0x08,
+        k_EFriendFlagOnGameServer = 0x10,
+
+        // k_EFriendFlagHasPlayedWith	= 0x20,	// not currently used
+        // k_EFriendFlagFriendOfFriend	= 0x40, // not currently used
+        k_EFriendFlagRequestingFriendship = 0x80,
+        k_EFriendFlagRequestingInfo = 0x100,
+        k_EFriendFlagIgnored = 0x200,
+        k_EFriendFlagIgnoredFriend = 0x400,
+
+        // k_EFriendFlagSuggested		= 0x800,	// not used
+        k_EFriendFlagChatMember = 0x1000,
+        k_EFriendFlagAll = 0xFFFF,
+    };
+
+    /// <summary>
+    /// List of states a Steam friend can be in.
+    /// https://partner.steamgames.com/doc/api/ISteamFriends#EPersonaState
+    /// </summary>
+    public enum EPersonaState : Int32
+    {
+        k_EPersonaStateOffline = 0, // friend is not currently logged on
+        k_EPersonaStateOnline = 1, // friend is logged on
+        k_EPersonaStateBusy = 2, // user is on, but busy
+        k_EPersonaStateAway = 3, // auto-away feature
+        k_EPersonaStateSnooze = 4, // auto-away for a long time
+        k_EPersonaStateLookingToTrade = 5, // Online, trading
+        k_EPersonaStateLookingToPlay = 6, // Online, wanting to play
+        k_EPersonaStateInvisible = 7, // Online, but appears offline to friends.  This status is never published to clients.
+        k_EPersonaStateMax,
+    };
 
     public enum EResult
     {

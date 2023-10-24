@@ -68,13 +68,13 @@ namespace Steamworksnt
                 return;
             }
 
-            UnityEngine.Debug.Log(
-                "(Steamworks SDK callback)\n\n"
-                    + $"{callback.m_iCallback}\n\n"
-                    + $"m_hSteamUser: {callback.m_hSteamUser}\n"
-                    + $"m_pubParam: {callback.m_pubParam}\n"
-                    + $"m_cubParam: {callback.m_cubParam}\n"
-            );
+            // UnityEngine.Debug.Log(
+            //     "(Steamworks SDK callback)\n\n"
+            //         + $"{callback.m_iCallback}\n\n"
+            //         + $"m_hSteamUser: {callback.m_hSteamUser}\n"
+            //         + $"m_pubParam: {callback.m_pubParam}\n"
+            //         + $"m_cubParam: {callback.m_cubParam}\n"
+            // );
 
             // Special case - asynchronous Steamworks SDK API calls.
             if (callback.m_iCallback == Callback.SteamAPICallCompleted_t)
