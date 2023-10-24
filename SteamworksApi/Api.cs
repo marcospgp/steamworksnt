@@ -102,6 +102,12 @@ namespace Steamworksnt.SteamworksApi
             int iFriendFlags
         );
 
+        [DllImport(DLL_FILENAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern void SteamAPI_ISteamFriends_ActivateGameOverlay(
+            IntPtr iSteamFriends,
+            string pchDialog
+        );
+
         /// <returns> uint64_steamid </returns>
         [DllImport(DLL_FILENAME, CallingConvention = CallingConvention.Cdecl)]
         public static extern UInt64 SteamAPI_ISteamFriends_GetFriendByIndex(
