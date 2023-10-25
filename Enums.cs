@@ -431,4 +431,21 @@ namespace Steamworksnt
         k_ESteamNetworkingAvailability_Unknown = 0, // Internal dummy/sentinel, or value is not applicable in this context
         k_ESteamNetworkingAvailability__Force32bit = 0x7fffffff,
     };
+
+    // lobby type description
+    public enum ELobbyType : Int32
+    {
+        k_ELobbyTypePrivate = 0, // only way to join the lobby is to invite to someone else
+        k_ELobbyTypeFriendsOnly = 1, // shows for friends or invitees, but not in lobby list
+        k_ELobbyTypePublic = 2, // visible for friends and in lobby list
+
+        // returned by search, but not visible to other friends
+        // useful if you want a user in two lobbies, for example matching groups together
+        // a user can be in only one regular lobby, and up to two invisible lobbies
+        k_ELobbyTypeInvisible = 3,
+
+        // private, unique and does not delete when empty - only one of these may exist per unique keypair set
+        // can only create from webapi
+        k_ELobbyTypePrivateUnique = 4,
+    };
 }

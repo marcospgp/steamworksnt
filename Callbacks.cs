@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using Steamworksnt.SteamworksApi;
 
 namespace Steamworksnt
@@ -10,6 +11,8 @@ namespace Steamworksnt
         private static readonly HashSet<Int32> validCallbackIds = new HashSet<Int32>(
             (Int32[])Enum.GetValues(typeof(Callback))
         );
+
+        private static readonly Dictionary<ulong, (Action<object>, Type)> pendingApiCalls = new();
 
         /// <summary>
         /// Must be called once before anything else on this class.
@@ -59,36 +62,51 @@ namespace Steamworksnt
             }
         }
 
-        private static void OnCallback(CallbackMsg_t callback)
+        /// <summary>
+        /// Should only be used by the "SteamAPICall_t" struct.
+        /// </summary>
+        public static Task<T> _GetApiCallResponse<T>(ulong apiCallId)
+        {
+            var tcs = new TaskCompletionSource<T>();
+
+            pendingApiCalls.Add(
+                apiCallId,
+                ((object result) => tcs.SetResult((T)result), typeof(T))
+            );
+
+            return tcs.Task;
+        }
+
+        private static void OnCallback(CallbackMsg_t msg)
         {
             // Some callbacks are received with an unrecognized ID, which we ignore.
             // See more: https://github.com/Facepunch/Facepunch.Steamworks/issues/507#issuecomment-1771804971
-            if (!validCallbackIds.Contains((Int32)callback.m_iCallback))
+            if (!validCallbackIds.Contains((Int32)msg.m_iCallback))
             {
                 return;
             }
 
             // UnityEngine.Debug.Log(
             //     "(Steamworks SDK callback)\n\n"
-            //         + $"{callback.m_iCallback}\n\n"
-            //         + $"m_hSteamUser: {callback.m_hSteamUser}\n"
-            //         + $"m_pubParam: {callback.m_pubParam}\n"
-            //         + $"m_cubParam: {callback.m_cubParam}\n"
+            //         + $"{msg.m_iCallback}\n\n"
+            //         + $"m_hSteamUser: {msg.m_hSteamUser}\n"
+            //         + $"m_pubParam: {msg.m_pubParam}\n"
+            //         + $"m_cubParam: {msg.m_cubParam}\n"
             // );
 
             // Special case - asynchronous Steamworks SDK API calls.
-            if (callback.m_iCallback == Callback.SteamAPICallCompleted_t)
+            if (msg.m_iCallback == Callback.SteamAPICallCompleted_t)
             {
-                HandleApiCallCompleted(callback);
+                HandleApiCallCompleted(msg);
             }
         }
 
-        private static void HandleApiCallCompleted(CallbackMsg_t callback)
+        private static void HandleApiCallCompleted(CallbackMsg_t msg)
         {
             Int32 hSteamPipe = Api.SteamAPI_GetHSteamPipe();
 
-            SteamAPICallCompleted_t call = Marshal.PtrToStructure<SteamAPICallCompleted_t>(
-                callback.m_pubParam
+            SteamAPICallCompleted_t apiCall = Marshal.PtrToStructure<SteamAPICallCompleted_t>(
+                msg.m_pubParam
             );
 
             // /!\ Important: not ignoring API call results with invalid IDs
@@ -97,12 +115,21 @@ namespace Steamworksnt
             // Note we also receive callbacks with invalid IDs, not just API
             // call results (and even when no SDK method that should trigger one
             // had been called).
-            if (!validCallbackIds.Contains((Int32)call.m_iCallback))
+            if (!validCallbackIds.Contains((Int32)apiCall.m_iCallback))
             {
                 return;
             }
 
-            IntPtr resultPtr = Marshal.AllocHGlobal(callback.m_cubParam);
+            if (!pendingApiCalls.ContainsKey(apiCall.m_hAsyncCall))
+            {
+                return;
+            }
+
+            var (callback, type) = pendingApiCalls[apiCall.m_hAsyncCall];
+
+            _ = pendingApiCalls.Remove(apiCall.m_hAsyncCall);
+
+            IntPtr resultPtr = Marshal.AllocHGlobal(msg.m_cubParam);
 
             try
             {
@@ -110,28 +137,18 @@ namespace Steamworksnt
 
                 bool success = Api.SteamAPI_ManualDispatch_GetAPICallResult(
                     hSteamPipe,
-                    call.m_hAsyncCall,
+                    apiCall.m_hAsyncCall,
                     resultPtr,
-                    // Not sure if these two parameters should be from "call" or
-                    // "callback". Steamworks SDK code example seems to suggest
-                    // it should be "callback", but that doesn't make much
-                    // sense.
-                    (int)call.m_cubParam,
-                    (Callback)call.m_iCallback,
+                    (int)apiCall.m_cubParam,
+                    (Callback)apiCall.m_iCallback,
                     ref failed
                 );
 
                 if (!success)
                 {
-                    // Steamworks SDK code example in "steam_api.h" ignores this
-                    // scenario.
-                    // Initially we threw an error here, but that error was
-                    // being thrown even when no API call result was expected
-                    // (no async SDK method had been called).
-                    // Maybe this is related to how we get unrecognized
-                    // callbacks (with IDs that are not part of the callback
-                    // IDs enum).
-                    return;
+                    // Steamworks SDK code example in "steam_api.h" ignores a
+                    // return value of "false".
+                    throw new Exception("GetAPICallResult() returned false.");
                 }
 
                 if (failed)
@@ -144,14 +161,14 @@ namespace Steamworksnt
 
                 UnityEngine.Debug.Log(
                     $"Got Steamworks SDK API call completed callback:"
-                        + $"call.m_hAsyncCall: {call.m_hAsyncCall}"
-                        + $"call.m_iCallback: {call.m_iCallback}"
-                        + $"call.m_cubParam: {call.m_cubParam}"
+                        + $"m_hAsyncCall: {apiCall.m_hAsyncCall}"
+                        + $"m_iCallback: {apiCall.m_iCallback}"
+                        + $"m_cubParam: {apiCall.m_cubParam}"
                 );
 
-                // TODO: When implementing an actual API call, set things up so
-                // caller specifies type of struct they are expecting, then we
-                // can create and populate it from "resultPtr".
+                object result = Marshal.PtrToStructure(resultPtr, type);
+
+                callback(result);
             }
             finally
             {

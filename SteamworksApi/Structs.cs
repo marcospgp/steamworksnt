@@ -2,6 +2,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 namespace Steamworksnt.SteamworksApi
 {
@@ -21,6 +22,30 @@ namespace Steamworksnt.SteamworksApi
         public IntPtr m_pubParam; // Points to the callback structure
         public Int32 m_cubParam; // Size of the data pointed to by m_pubParam
     };
+
+    /// <summary>
+    /// General API call response struct.
+    /// "Pack = 1" because this corresponds to a C++ uint64.
+    /// </summary>
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct SteamAPICall_t<T>
+    {
+        public UInt64 id;
+
+        public readonly async Task<T> GetResult()
+        {
+            object result = await Callbacks._GetApiCallResponse<T>(id);
+
+            if (!(result is T))
+            {
+                throw new Exception(
+                    "Attempted to convert Steamworks SDK API call result to the wrong type."
+                );
+            }
+
+            return (T)result;
+        }
+    }
 
     /// <summary>
     /// Asynchronous API call result struct.
@@ -66,10 +91,32 @@ namespace Steamworksnt.SteamworksApi
         public string m_debugMsg;
     }
 
+    //-----------------------------------------------------------------------------
+    // Purpose: Result of our request to create a Lobby
+    //			m_eResult == k_EResultOK on success
+    //			at this point, the lobby has been joined and is ready for use
+    //			a LobbyEnter_t callback will also be received (since the local user is joining their own lobby)
+    //-----------------------------------------------------------------------------
+    [StructLayout(LayoutKind.Sequential, Pack = Api.PLATFORM_STRUCT_PACK_SIZE)]
+    public struct LobbyCreated_t
+    {
+        // k_EResultOK - the lobby was successfully created
+        // k_EResultNoConnection - your Steam client doesn't have a connection to the back-end
+        // k_EResultTimeout - you the message to the Steam servers, but it didn't respond
+        // k_EResultFail - the server responded, but with an unknown internal error
+        // k_EResultAccessDenied - your game isn't set to allow lobbies, or your client does haven't rights to play the game
+        // k_EResultLimitExceeded - your game client has created too many lobbies
+        public EResult m_eResult;
+
+        public UInt64 m_ulSteamIDLobby; // chat room, zero if failed
+    };
+
     #endregion
 
     #region Non-callback structs
 
+    // "Pack = 1" because the SDK does "#pragma pack(push,1)" before this
+    // struct is declared.
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct SteamNetworkingIdentity
     {

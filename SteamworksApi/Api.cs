@@ -139,6 +139,24 @@ namespace Steamworksnt.SteamworksApi
 
         #endregion
 
+        #region SteamMatchmaking
+
+        /// <returns> ISteamMatchmaking * </returns>
+        [DllImport(DLL_FILENAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr SteamAPI_SteamMatchmaking_v009();
+
+        /// <summary>
+        /// https://partner.steamgames.com/doc/api/ISteamMatchmaking#CreateLobby
+        /// </summary>
+        [DllImport(DLL_FILENAME, CallingConvention = CallingConvention.Cdecl)]
+        public static extern SteamAPICall_t<LobbyCreated_t> SteamAPI_ISteamMatchmaking_CreateLobby(
+            IntPtr iSteamMatchmaking,
+            ELobbyType eLobbyType,
+            int cMaxMembers
+        );
+
+        #endregion
+
         #region SteamNetworkingIdentity
 
         [DllImport(DLL_FILENAME, CallingConvention = CallingConvention.Cdecl)]
