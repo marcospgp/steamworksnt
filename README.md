@@ -1,12 +1,16 @@
 # Steamworksn't
 
-An example of how to interface with the Steamworks SDK (C++) from C# in Unity.
+A minimal Steamworks SDK wrapper, focusing on doing-it-yourself and staying as close to the original code as possible.
 
 There is no build step - you can use this code directly in your Unity/C# project.
 
 Not all SDK functions are included in `Api.cs`, but you can easily add any you would like to call.
 
-This repo is currently set up for the Steamworks SDK v1.57. Keeping it up to date should be simple, as there seems to be an effort to avoid breaking changes to the SDK by its maintainers at Valve.
+## SDK Version
+
+This repo is currently set up for the Steamworks SDK v1.57.
+
+Keeping it up to date should be simple, as there seems to be an effort to avoid breaking changes to the SDK by its maintainers at Valve.
 
 ## Why
 
