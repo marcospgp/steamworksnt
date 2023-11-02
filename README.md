@@ -10,7 +10,7 @@ Not all SDK functions are included in `Api.cs`, but you can easily add any you w
 
 This repo is currently set up for the Steamworks SDK v1.57.
 
-Keeping it up to date should be simple, as there seems to be an effort to avoid breaking changes to the SDK by its maintainers at Valve.
+Keeping it up to date should be simple, as there seems to be an effort to minimize breaking changes to the SDK by Valve.
 
 ## Why
 
