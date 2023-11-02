@@ -16,7 +16,8 @@ Keeping it up to date should be simple, as there seems to be an effort to minimi
 
 The Steamworks SDK is based on C++ and thus is not straightforward to interop with from C# code. One has to use P/Invoke, a way to call functions declared in binary files (such as `.dll` on Windows).
 
-Existing wrappers such as Steamworks.NET or Facepunch.Steamworks can be opaque and stale, with multiple open issues and PRs at time of writing. I believe it is worth working directly with the Steamworks binaries and bringing the API calls into one's own code, as that makes it easier to understand what's going on under the hood, update SDK versions at any time, and make use of functionality one may not have otherwise.
+Existing wrappers such as Steamworks.NET or Facepunch.Steamworks can be opaque and stale, with multiple open issues and PRs at time of writing.
+I believe it is worth working directly with the Steamworks binaries and bringing the API calls into one's own code, as that makes it easier to understand what's going on under the hood, update SDK versions at any time, and make use of functionality one may not have otherwise.
 
 ## Setting up
 
