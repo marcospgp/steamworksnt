@@ -19,7 +19,7 @@ namespace Steamworksnt
             if (Api.SteamAPI_RestartAppIfNecessary())
             {
                 UnityEngine.Debug.Log(
-                    "\"SteamAPI_RestartAppIfNecessary\" returned true. Steam should "
+                    "\"SteamAPI_RestartAppIfNecessary()\" returned true. Steam should "
                         + "now be starting a new process, so terminating this one..."
                 );
                 Application.Quit();
@@ -28,12 +28,12 @@ namespace Steamworksnt
 
             if (!Api.SteamAPI_IsSteamRunning())
             {
-                throw new Exception("Steam client is not running - unable to init Steam SDK.");
+                Fail("Unable to init Steam SDK because the Steam client is not running.");
             }
 
             if (!Api.SteamAPI_Init())
             {
-                throw new Exception("Unable to init Steam SDK. See logs for more details.");
+                Fail("Unable to init Steam SDK. See logs for more details.");
             }
 
             // Hook warning & debug messages
@@ -51,6 +51,18 @@ namespace Steamworksnt
         {
             UnityEngine.Debug.LogWarning($"Steamworks SDK warning (severity {nSeverity}):");
             UnityEngine.Debug.LogWarning(Marshal.PtrToStringUni(pchDebugText));
+        }
+
+        private static void Fail(string message)
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorUtility.DisplayDialog(
+                "Steamworks SDK failure",
+                $"{message}\nFurther calls to the Steamworks SDK may cause Unity to crash.",
+                "Ok"
+            );
+#endif
+            throw new Exception(message);
         }
     }
 }
